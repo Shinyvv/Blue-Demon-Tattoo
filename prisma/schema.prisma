@@ -1,0 +1,39 @@
+// Fortune Barbershop - Prisma schema
+// Documentación: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EstadoReserva {
+  PENDIENTE
+  CONFIRMADA
+  CANCELADA
+  COMPLETADA
+}
+
+model Reserva {
+  id        String        @id @default(cuid())
+  nombre    String        @db.VarChar(120)
+  email     String        @db.VarChar(160)
+  telefono  String        @db.VarChar(40)
+  servicio  String        @db.VarChar(120)
+  fecha     DateTime      @db.Date
+  hora      String        @db.VarChar(5) // formato HH:mm
+  duracion  Int // minutos (10 a 180)
+  inicioAt  DateTime // timestamp absoluto del inicio (para evitar solapes)
+  finAt     DateTime // timestamp absoluto de finalizacion
+  estado    EstadoReserva @default(CONFIRMADA)
+  notas     String?       @db.Text
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([fecha])
+  @@index([inicioAt, finAt])
+  @@index([email])
+}
