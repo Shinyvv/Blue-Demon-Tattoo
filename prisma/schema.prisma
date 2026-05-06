@@ -30,6 +30,12 @@ model Reserva {
   finAt     DateTime // timestamp absoluto de finalizacion
   estado    EstadoReserva @default(CONFIRMADA)
   notas     String?       @db.Text
+
+  // Extensiones Tattoo
+  tipoTatuaje String?     @db.VarChar(100)
+  tamano      String?     @db.VarChar(100)
+  zonaCuerpo  String?     @db.VarChar(100)
+
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 

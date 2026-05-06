@@ -101,17 +101,10 @@ export async function POST(request: Request) {
         duracion: data.duracion,
         inicioAt: inicio,
         finAt: fin,
-        notas: data.notas ?? null,
-      },
-    })
-
-    return NextResponse.json(
-      {
-        ok: true,
-        message: "Reserva creada con éxito.",
-        reserva: {
-          id: creada.id,
-          nombre: creada.nombre,
+          notas: data.descripcion ?? data.notas ?? null,
+          tipoTatuaje: data.tipoTatuaje ?? null,
+          tamano: data.tamano ?? null,
+          zonaCuerpo: data.zonaCuerpo ?? null,
           servicio: creada.servicio,
           fecha: data.fecha,
           hora: creada.hora,

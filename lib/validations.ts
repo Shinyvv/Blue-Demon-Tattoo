@@ -1,17 +1,13 @@
 import { z } from "zod"
 import { BUSINESS } from "./config"
 
-/**
- * Validador del payload entrante de POST /api/reservas.
- * El tel√©fono se normaliza (s√≥lo d√≠gitos y "+") antes de validar.
- */
 export const reservaSchema = z.object({
   nombre: z
     .string()
     .trim()
     .min(2, "El nombre debe tener al menos 2 caracteres")
     .max(120, "El nombre es demasiado largo"),
-  email: z.string().trim().toLowerCase().email("Email inv√°lido").max(160),
+  email: z.string().trim().toLowerCase().email("Email inv·lido").max(160),
   telefono: z
     .string()
     .trim()
@@ -19,21 +15,25 @@ export const reservaSchema = z.object({
     .pipe(
       z
         .string()
-        .min(8, "Tel√©fono inv√°lido")
-        .max(20, "Tel√©fono inv√°lido")
-        .regex(/^\+?\d{8,15}$/, "Tel√©fono inv√°lido"),
-    ),  tipoServicio: z.string().trim().optional(),  servicio: z.string().trim().min(2).max(120),
-  // YYYY-MM-DD
+        .min(8, "TelÈfono inv·lido")
+        .max(20, "TelÈfono inv·lido")
+        .regex(/^\+?\d{8,15}$/, "TelÈfono inv·lido"),
+    ),
+  tipoServicio: z.string().trim().optional(),
+  servicio: z.string().trim().min(2).max(120),
+  tipoTatuaje: z.string().trim().optional(),
+  tamano: z.string().trim().optional(),
+  zonaCuerpo: z.string().trim().optional(),
+  descripcion: z.string().max(1000).optional().nullable(),
   fecha: z
     .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Fecha inv√°lida (YYYY-MM-DD)"),
-  // HH:mm
-  hora: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Hora inv√°lida (HH:mm)"),
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Fecha inv·lida (YYYY-MM-DD)"),
+  hora: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Hora inv·lida (HH:mm)"),
   duracion: z
-    .number({ invalid_type_error: "Duraci√≥n debe ser num√©rica" })
-    .int("Duraci√≥n entera en minutos")
-    .min(BUSINESS.minDuration, `M√≠nimo ${BUSINESS.minDuration} minutos`)
-    .max(BUSINESS.maxDuration, `M√°ximo ${BUSINESS.maxDuration} minutos`),
+    .number({ invalid_type_error: "DuraciÛn debe ser numÈrica" })
+    .int("DuraciÛn entera en minutos")
+    .min(BUSINESS.minDuration, `MÌnimo ${BUSINESS.minDuration} minutos`)
+    .max(BUSINESS.maxDuration, `M·ximo ${BUSINESS.maxDuration} minutos`),
   notas: z.string().max(500).optional().nullable(),
 })
 

@@ -4,15 +4,15 @@
  */
 
 export const BUSINESS = {
-  name: "New Hair Salón",
-  shortName: "New Hair",
-  tagline: "Color, estilo y cuidado capilar profesional.",
+  name: "Blue Demon Tattoo",
+  shortName: "Blue Demon",
+  tagline: "Estudio de tatuajes, arte corporal y modificaciones.",
   phone: "+56 9 8821 5996",
   phoneHref: "tel:+56988215996",
   whatsappHref: "https://wa.me/56988215996",
   whatsappMessage:
-    "Hola New Hair Salón, me gustaría reservar una hora. ¿Tienen disponibilidad?",
-  email: "contacto@newhairsalon.cl",
+    "Hola Blue Demon Tattoo, me gustaría agendar una evaluación para un tatuaje.",
+  email: "contacto@bluedemontattoo.cl",
   address: "Boulevard Talagante - Enrique Alcalde 1080, Local 90",
   city: "Talagante, Región Metropolitana",
   mapsEmbedSrc:
