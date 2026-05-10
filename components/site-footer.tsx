@@ -1,80 +1,108 @@
+"use client"
+
 import Link from "next/link"
+import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react"
 import { BUSINESS, whatsappLink } from "@/lib/config"
 
 export function SiteFooter() {
-  const year = new Date().getFullYear()
+  const currentYear = new Date().getFullYear()
+
   return (
-    <footer className="border-t border-border bg-background">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-3 md:px-6">
-        <div>
-          <Link href="/" className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-full border border-primary/40 bg-primary/10 text-primary font-serif italic">
-              N
+    <footer className="border-t border-zinc-800 bg-zinc-950 text-zinc-400 py-12 md:py-16">
+      <div className="mx-auto grid max-w-6xl gap-12 px-4 md:grid-cols-4 md:px-6 md:gap-8">
+        
+        <div className="space-y-4 md:col-span-1">
+          <Link href="/" className="inline-block">
+            <span className="font-serif text-2xl uppercase tracking-widest text-white block">
+              Blue <span className="text-red-600">Demon</span>
             </span>
-            <span className="font-serif text-xl">
-              New Hair <span className="text-primary italic">Salón</span>
-            </span>
+            <span className="text-xs uppercase tracking-widest text-zinc-500">Tattoo Studio</span>
           </Link>
-          <p className="mt-3 max-w-sm text-sm text-muted-foreground">
-            {BUSINESS.tagline} Salón profesional en {BUSINESS.city}.
-          </p>
+          <p className="text-sm text-balance max-w-xs">{BUSINESS.tagline}</p>
         </div>
 
-        <div className="text-sm">
-          <p className="text-xs uppercase tracking-widest text-primary">Contacto</p>
-          <ul className="mt-3 space-y-2 text-muted-foreground">
-            <li>{BUSINESS.address}</li>
-            <li>
-              <a className="hover:text-foreground" href={BUSINESS.phoneHref}>
-                {BUSINESS.phone}
-              </a>
-            </li>
-            <li>
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
+            Ubicación
+          </h3>
+          <ul className="space-y-3 text-sm">
+            <li className="flex gap-2">
+              <MapPin className="mt-1 h-4 w-4 shrink-0 text-red-500" />
               <a
-                className="hover:text-foreground"
-                href={whatsappLink()}
+                href={BUSINESS.mapsLink}
                 target="_blank"
                 rel="noreferrer"
+                className="hover:text-white transition-colors"
               >
-                WhatsApp
+                {BUSINESS.address}
+                <br />
+                {BUSINESS.city}
               </a>
-            </li>
-            <li>
-              Lunes a Sábado · {BUSINESS.openHour}:00 — {BUSINESS.closeHour}:00
             </li>
           </ul>
         </div>
 
-        <div className="text-sm">
-          <p className="text-xs uppercase tracking-widest text-primary">Navegación</p>
-          <ul className="mt-3 space-y-2 text-muted-foreground">
-            <li>
-              <Link className="hover:text-foreground" href="/#servicios">
-                Servicios
-              </Link>
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
+            Contacto
+          </h3>
+          <ul className="space-y-3 text-sm">
+            <li className="flex items-center gap-2">
+              <Phone className="h-4 w-4 shrink-0 text-red-500" />
+              <a href={BUSINESS.phoneHref} className="hover:text-white transition-colors">
+                {BUSINESS.phone}
+              </a>
             </li>
-            <li>
-              <Link className="hover:text-foreground" href="/#marcas">
-                Marcas
-              </Link>
+            <li className="flex items-center gap-2">
+              <Mail className="h-4 w-4 shrink-0 text-red-500" />
+              <a href={`mailto:${BUSINESS.email}`} className="hover:text-white transition-colors">
+                {BUSINESS.email}
+              </a>
             </li>
-            <li>
-              <Link className="hover:text-foreground" href="/#contacto">
-                Contacto
-              </Link>
+          </ul>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-sm font-semibold uppercase tracking-wider text-white">
+            Horario
+          </h3>
+          <ul className="space-y-2 text-sm text-zinc-500">
+            <li className="flex justify-between">
+              <span>Lunes a Sábado</span>
+              <span>{BUSINESS.openHour}:00 - {BUSINESS.closeHour}:00</span>
             </li>
-            <li>
-              <Link className="hover:text-foreground" href="/reservar">
-                Reservar hora
-              </Link>
+            <li className="flex justify-between mt-1 pt-1 border-t border-zinc-800">
+              <span>Domingo</span>
+              <span>Cerrado</span>
             </li>
           </ul>
         </div>
       </div>
-      <div className="border-t border-border">
-        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-6 text-xs text-muted-foreground md:flex-row md:px-6">
-          <p>© {year} {BUSINESS.name}. Todos los derechos reservados.</p>
-          <p>Hecho con cuidado en Talagante, Chile.</p>
+
+      <div className="mx-auto mt-12 flex max-w-6xl flex-col items-center justify-between gap-4 border-t border-zinc-800 px-4 pt-8 md:flex-row md:px-6">
+        <p className="text-xs text-zinc-600">
+          &copy; {currentYear} {BUSINESS.name}. Todos los derechos reservados.
+        </p>
+
+        <div className="flex items-center gap-4">
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noreferrer"
+            className="text-zinc-600 hover:text-white transition-colors"
+            aria-label="Facebook"
+          >
+            <Facebook className="h-5 w-5" />
+          </a>
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noreferrer"
+            className="text-zinc-600 hover:text-white transition-colors"
+            aria-label="Instagram"
+          >
+            <Instagram className="h-5 w-5" />
+          </a>
         </div>
       </div>
     </footer>

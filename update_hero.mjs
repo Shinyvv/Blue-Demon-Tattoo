@@ -1,4 +1,40 @@
-import Link from "next/link"
+
+import fs from "fs/promises"
+async function run() {
+  const heroContent = `import Link from "next/link"
+import { Button } from "@/components/ui/button"
+
+export function Hero() {
+  return (
+    <section className="relative flex min-h-[90vh] items-center justify-center overflow-hidden bg-zinc-950">
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-zinc-950/80 z-10" />
+        <img
+          src="https://images.unsplash.com/photo-1562962230-16e4623d36e6?q=80&w=2000&auto=format&fit=crop"
+          alt="Tattoo Studio Background"
+          className="h-full w-full object-cover opacity-50 sepia-[.3] grayscale"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-20" />
+      </div>
+
+      <div className="relative z-30 mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
+        <h1 className="font-serif text-5xl font-bold tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl">
+          Convierte tu idea en <span className="text-red-600 block mt-2">arte permanente</span>
+        </h1>
+        <p className="mx-auto mt-6 max-w-2xl text-lg text-zinc-300 md:text-xl mb-10">
+          Tatuajes personalizados, artistas profesionales y estilos variados. Cada sesión requiere evaluación previa para garantizar la mejor calidad y diseño.
+        </p>
+        <Button asChild size="lg" className="rounded-full bg-red-600 px-8 py-6 text-lg font-medium text-white hover:bg-red-700">
+          <Link href="/reservar">Reservar evaluación</Link>
+        </Button>
+      </div>
+    </section>
+  )
+}
+`
+  await fs.writeFile("components/sections/hero.tsx", heroContent)
+
+  const serviciosContent = `import Link from "next/link"
 import { Sparkles, PenTool, Search } from "lucide-react"
 
 export function ServicesSection() {
@@ -6,25 +42,25 @@ export function ServicesSection() {
     {
       id: "personalizado",
       nombre: "Tatuaje Personalizado",
-      descripcion: "Diseï¿½o ï¿½nico creado exclusivamente para ti basado en tus ideas.",
+      descripcion: "Diseño único creado exclusivamente para ti basado en tus ideas.",
       icon: PenTool
     },
     {
       id: "tradicional",
       nombre: "Tatuaje Tradicional",
-      descripcion: "Colores sï¿½lidos y lï¿½neas gruesas. Un clï¿½sico que nunca muere.",
+      descripcion: "Colores sólidos y líneas gruesas. Un clásico que nunca muere.",
       icon: PenTool
     },
     {
       id: "fine-line",
       nombre: "Fine Line",
-      descripcion: "Detalles minimalistas y lï¿½neas muy finas para un resultado elegante.",
+      descripcion: "Detalles minimalistas y líneas muy finas para un resultado elegante.",
       icon: PenTool
     },
     {
       id: "blackwork",
       nombre: "Blackwork",
-      descripcion: "Geometrï¿½a, puntillismo y alto contraste solo con tinta negra.",
+      descripcion: "Geometría, puntillismo y alto contraste solo con tinta negra.",
       icon: PenTool
     }
   ]
@@ -33,15 +69,15 @@ export function ServicesSection() {
     {
       id: "cover-up",
       nombre: "Cover-up (Cobertura)",
-      descripcion: "Ocultamos tatuajes antiguos o cicatrices con un diseï¿½o nuevo (previa evaluaciï¿½n detallada).",
+      descripcion: "Ocultamos tatuajes antiguos o cicatrices con un diseño nuevo (previa evaluación detallada).",
       icon: Search
     }
   ]
 
-  const evaluaciones = [
+  const eval = [
     {
       id: "asesoria",
-      nombre: "Asesorï¿½a de diseï¿½o",
+      nombre: "Asesoría de diseño",
       descripcion: "Nos reunimos para hablar de tu idea, ubicarla en el cuerpo y cotizar adecuadamente.",
       icon: Sparkles
     }
@@ -58,18 +94,18 @@ export function ServicesSection() {
             Tu cuerpo es el <span className="italic text-red-600">lienzo</span>
           </h2>
           <p className="mt-4 text-zinc-400 text-pretty">
-            Nos enfocamos en entregar un trabajo artï¿½stico y profesional. Todo trabajo requiere evaluaciï¿½n previa para un resultado ï¿½ptimo.
+            Nos enfocamos en entregar un trabajo artístico y profesional. Todo trabajo requiere evaluación previa para un resultado óptimo.
           </p>
         </header>
 
         <div className="mt-16 space-y-16">
-          <CategoryBlock title="Tatuajes" description="Estilos y diseï¿½os a tu medida." icon={PenTool} items={serviciosTattoo} />
-          <CategoryBlock title="Coberturas" description="Renueva tu piel con un diseï¿½o mejor." icon={Search} items={coberturas} />
-          <CategoryBlock title="EvaluaciÃ¯Â¿Â½n" description="El primer paso hacia tu nuevo tattoo." icon={Sparkles} items={evaluaciones} />
+          <CategoryBlock title="Tatuajes" description="Estilos y diseños a tu medida." icon={PenTool} items={serviciosTattoo} />
+          <CategoryBlock title="Coberturas" description="Renueva tu piel con un diseño mejor." icon={Search} items={coberturas} />
+          <CategoryBlock title="Evaluación" description="El primer paso hacia tu nuevo tattoo." icon={Sparkles} items={eval} />
         </div>
 
         <p className="mt-16 text-center text-sm text-zinc-500">
-          * Los precios no son fijos, todo valor exacto estï¿½ sujeto a evaluaciï¿½n de diseï¿½o, tamaï¿½o y zona del cuerpo.
+          * Los precios no son fijos, todo valor exacto está sujeto a evaluación de diseño, tamaño y zona del cuerpo.
         </p>
       </div>
     </section>
@@ -96,7 +132,7 @@ function CategoryBlock({ title, description, icon: Icon, items }: { title: strin
           const SIcon = s.icon
           return (
             <Link
-              href={`/reservar?servicio=${s.id}`}
+              href={\`/reservar?servicio=\${s.id}\`}
               key={s.id}
               className="group flex flex-col rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 transition-all hover:-translate-y-1 hover:border-red-600/40 hover:shadow-sm"
             >
@@ -127,3 +163,10 @@ function CategoryBlock({ title, description, icon: Icon, items }: { title: strin
     </div>
   )
 }
+`
+  await fs.writeFile("components/sections/services.tsx", serviciosContent)
+
+  console.log("Updated Hero and Services.")
+}
+run();
+

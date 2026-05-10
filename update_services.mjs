@@ -1,4 +1,8 @@
-import { PenTool, Target, Layers } from "lucide-react"
+
+import fs from "fs/promises"
+
+async function run() {
+  const content = `import { PenTool, Target, Layers } from "lucide-react"
 
 export type ServiceCategoryId = "tatuajes" | "coberturas"
 
@@ -13,13 +17,13 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
   {
     id: "tatuajes",
     nombre: "Tatuajes",
-    descripcion: "Evaluaciï¿½n para nuevos proyectos de tatuaje.",
+    descripcion: "Evaluación para nuevos proyectos de tatuaje.",
     icon: PenTool,
   },
   {
     id: "coberturas",
     nombre: "Coberturas (Cover-up)",
-    descripcion: "Evaluaciï¿½n para tapar o mejorar tatuajes antiguos.",
+    descripcion: "Evaluación para tapar o mejorar tatuajes antiguos.",
     icon: Layers,
   },
 ]
@@ -38,7 +42,7 @@ export const SERVICES: Service[] = [
   {
     id: "tradicional",
     nombre: "Tatuaje Tradicional",
-    descripcion: "Evaluaciï¿½n para tatuaje tradicional (americano/neo).",
+    descripcion: "Evaluación para tatuaje tradicional (americano/neo).",
     categoria: "tatuajes",
     duracion: 30,
     precioDesde: 0,
@@ -47,7 +51,7 @@ export const SERVICES: Service[] = [
   {
     id: "blackwork",
     nombre: "Blackwork",
-    descripcion: "Evaluaciï¿½n para proyector blackwork.",
+    descripcion: "Evaluación para proyector blackwork.",
     categoria: "tatuajes",
     duracion: 30,
     precioDesde: 0,
@@ -56,7 +60,7 @@ export const SERVICES: Service[] = [
   {
     id: "fine-line",
     nombre: "Fine Line",
-    descripcion: "Evaluaciï¿½n para tatuajes de lï¿½nea fina.",
+    descripcion: "Evaluación para tatuajes de línea fina.",
     categoria: "tatuajes",
     duracion: 30,
     precioDesde: 0,
@@ -64,8 +68,8 @@ export const SERVICES: Service[] = [
   },
   {
     id: "personalizado",
-    nombre: "Diseï¿½o Personalizado",
-    descripcion: "Trae tu idea y la adaptamos a un diseï¿½o ï¿½nico.",
+    nombre: "Diseño Personalizado",
+    descripcion: "Trae tu idea y la adaptamos a un diseño único.",
     categoria: "tatuajes",
     duracion: 30,
     precioDesde: 0,
@@ -74,7 +78,7 @@ export const SERVICES: Service[] = [
   {
     id: "cover-up",
     nombre: "Cover-up / Arreglo",
-    descripcion: "Evaluaciï¿½n para coberturas o arreglos, analizamos la viabilidad.",
+    descripcion: "Evaluación para coberturas o arreglos, analizamos la viabilidad.",
     categoria: "coberturas",
     duracion: 30,
     precioDesde: 0,
@@ -93,3 +97,9 @@ export function getServicesByCategory(cat: ServiceCategoryId): Service[] {
 export function getCategoryById(id: ServiceCategoryId): ServiceCategory | undefined {
   return SERVICE_CATEGORIES.find((c) => c.id === id)
 }
+`
+  await fs.writeFile("lib/services.ts", content)
+  console.log("updated lib/services")
+}
+run();
+

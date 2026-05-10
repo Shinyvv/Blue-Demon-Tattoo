@@ -28,8 +28,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
 
-import { SERVICES, SERVICE_CATEGORIES, getServiceById, getServicesByCategory } from "@/lib/services"
-import { OPCIONES_DURACION } from "@/lib/horarios"
+import { SERVICES, SERVICE_CATEGORIES, getServicesByCategory, getServiceById } from "@/lib/services"
 import { BUSINESS } from "@/lib/config"
 import { cn } from "@/lib/utils"
 
@@ -41,10 +40,12 @@ interface FormState {
   telefono: string
   categoriaId: string
   servicioId: string
-  duracion: number
   fecha?: Date
   hora?: string
-  notas: string
+  tipoTatuaje: string
+  tamano: string
+  zonaCuerpo: string
+  descripcion: string
 }
 
 export function ReservationForm() {
@@ -52,7 +53,7 @@ export function ReservationForm() {
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
 
-  const initialId = searchParams.get("servicio") ?? "corte-dama"
+  const initialId = searchParams.get("servicio") ?? "personalizado"
   const initialService = getServiceById(initialId) ?? SERVICES[0]
 
   const [form, setForm] = useState<FormState>({
@@ -61,33 +62,28 @@ export function ReservationForm() {
     telefono: "",
     categoriaId: initialService.categoria,
     servicioId: initialService.id,
-    duracion: initialService.duracion,
     fecha: undefined,
     hora: undefined,
-    notas: "",
+    tipoTatuaje: initialService.nombre,
+    tamano: "Pequeño (1-5cm)",
+    zonaCuerpo: "",
+    descripcion: "",
   })
   const [slots, setSlots] = useState<string[]>([])
   const [status, setStatus] = useState<Status>("idle")
-  const [reservaConfirmada, setReservaConfirmada] = useState<{
-    nombre: string
-    fecha: string
-    hora: string
-    servicio: string
-  } | null>(null)
+  const [reservaConfirmada, setReservaConfirmada] = useState<any>(null)
 
   const servicioActual = useMemo(
     () => getServiceById(form.servicioId) ?? SERVICES[0],
     [form.servicioId],
   )
 
-  // Días bloqueados: domingos y fechas pasadas
   const today = useMemo(() => {
     const d = new Date()
     d.setHours(0, 0, 0, 0)
     return d
   }, [])
 
-  // Cargar slots cuando cambia fecha o duración
   useEffect(() => {
     const fecha = form.fecha
     if (!fecha) {
@@ -98,7 +94,7 @@ export function ReservationForm() {
     const controller = new AbortController()
     setStatus("loadingSlots")
     fetch(
-      `/api/reservas/disponibilidad?fecha=${fechaStr}&duracion=${form.duracion}`,
+      `/api/evaluaciones/disponibilidad?fecha=${fechaStr}&duracion=30`,
       { signal: controller.signal, cache: "no-store" },
     )
       .then((r) => r.json())
@@ -106,7 +102,6 @@ export function ReservationForm() {
         if (data?.ok) {
           setSlots(data.slots ?? [])
           setStatus("idle")
-          // Si la hora seleccionada ya no existe, limpiarla
           if (form.hora && !data.slots?.includes(form.hora)) {
             setForm((s) => ({ ...s, hora: undefined }))
           }
@@ -118,45 +113,22 @@ export function ReservationForm() {
       })
       .catch((err) => {
         if (err?.name === "AbortError") return
-        console.log("[v0] Error cargando slots:", err)
         setStatus("error")
       })
     return () => controller.abort()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form.fecha, form.duracion])
+  }, [form.fecha])
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((s) => ({ ...s, [key]: value }))
   }
 
-  function onSelectCategory(id: string) {
-    const subServices = getServicesByCategory(id as any)
-    const firstSvc = subServices[0] ?? SERVICES[0]
-    setForm((s) => ({
-      ...s,
-      categoriaId: id,
-      servicioId: firstSvc.id,
-      duracion: firstSvc.duracion,
-      hora: undefined,
-    }))
-  }
-
-  function onSelectService(id: string) {
-    const svc = getServiceById(id) ?? SERVICES[0]
-    setForm((s) => ({
-      ...s,
-      servicioId: svc.id,
-      duracion: svc.duracion,
-      hora: undefined,
-    }))
-  }
-
   function validar(): string | null {
-    if (form.nombre.trim().length < 2) return "Ingresa tu nombre completo."
+    if (form.nombre.trim().length < 2) return "Ingresa tu nombre."
     if (!/^\S+@\S+\.\S+$/.test(form.email)) return "Email inválido."
     if (form.telefono.replace(/\D/g, "").length < 8) return "Teléfono inválido."
     if (!form.fecha) return "Selecciona una fecha."
     if (!form.hora) return "Selecciona un horario."
+    if (!form.zonaCuerpo) return "Ingresa la zona del cuerpo."
     return null
   }
 
@@ -170,7 +142,7 @@ export function ReservationForm() {
 
     setStatus("submitting")
     try {
-      const res = await fetch("/api/reservas", {
+      const res = await fetch("/api/evaluaciones", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -179,16 +151,19 @@ export function ReservationForm() {
           telefono: form.telefono.trim(),
           tipoServicio: SERVICE_CATEGORIES.find(c => c.id === form.categoriaId)?.nombre ?? "",
           servicio: servicioActual.nombre,
+          tipoTatuaje: form.tipoTatuaje,
+          tamano: form.tamano,
+          zonaCuerpo: form.zonaCuerpo.trim(),
+          descripcion: form.descripcion.trim() || null,
           fecha: format(form.fecha!, "yyyy-MM-dd"),
           hora: form.hora,
-          duracion: form.duracion,
-          notas: form.notas.trim() || null,
+          duracion: 30, // Fijado a 30 mins
         }),
       })
       const data = await res.json()
       if (!res.ok || !data.ok) {
         setStatus("error")
-        toast.error(data?.error ?? "No se pudo crear la reserva")
+        toast.error(data?.error ?? "No se pudo agendar la evaluación")
         return
       }
       setReservaConfirmada({
@@ -198,10 +173,9 @@ export function ReservationForm() {
         servicio: servicioActual.nombre,
       })
       setStatus("success")
-      toast.success("¡Reserva confirmada!")
+      toast.success("¡Evaluación agendada!")
       startTransition(() => router.refresh())
     } catch (err) {
-      console.log("[v0] Error enviando reserva:", err)
       setStatus("error")
       toast.error("Error de red. Inténtalo nuevamente.")
     }
@@ -209,29 +183,29 @@ export function ReservationForm() {
 
   if (status === "success" && reservaConfirmada) {
     return (
-      <Card className="border-primary/40 bg-card/80">
+      <Card className="border-red-600/40 bg-zinc-900/80">
         <CardHeader className="items-center text-center">
-          <span className="grid h-14 w-14 place-items-center rounded-full bg-primary/15 text-primary">
+          <span className="grid h-14 w-14 place-items-center rounded-full bg-red-600/15 text-red-500">
             <CheckCircle2 className="h-7 w-7" />
           </span>
-          <CardTitle className="font-serif text-3xl">¡Reserva confirmada!</CardTitle>
-          <CardDescription>
+          <CardTitle className="font-serif text-3xl text-white">¡Evaluación Agendada!</CardTitle>
+          <CardDescription className="text-zinc-400">
             Te esperamos en {BUSINESS.name}, {reservaConfirmada.nombre}.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 text-center">
           <dl className="mx-auto grid max-w-sm grid-cols-1 gap-3 text-sm">
-            <div className="flex items-center justify-between rounded-md border border-border bg-background/40 px-4 py-2">
-              <dt className="text-muted-foreground">Servicio</dt>
-              <dd>{reservaConfirmada.servicio}</dd>
+            <div className="flex items-center justify-between rounded-md border border-zinc-800 bg-zinc-950/40 px-4 py-2">
+              <dt className="text-zinc-500">Trabajo</dt>
+              <dd className="text-zinc-200">{reservaConfirmada.servicio}</dd>
             </div>
-            <div className="flex items-center justify-between rounded-md border border-border bg-background/40 px-4 py-2">
-              <dt className="text-muted-foreground">Fecha</dt>
-              <dd className="capitalize">{reservaConfirmada.fecha}</dd>
+            <div className="flex items-center justify-between rounded-md border border-zinc-800 bg-zinc-950/40 px-4 py-2">
+              <dt className="text-zinc-500">Fecha</dt>
+              <dd className="capitalize text-zinc-200">{reservaConfirmada.fecha}</dd>
             </div>
-            <div className="flex items-center justify-between rounded-md border border-border bg-background/40 px-4 py-2">
-              <dt className="text-muted-foreground">Hora</dt>
-              <dd>{reservaConfirmada.hora} hrs</dd>
+            <div className="flex items-center justify-between rounded-md border border-zinc-800 bg-zinc-950/40 px-4 py-2">
+              <dt className="text-zinc-500">Hora</dt>
+              <dd className="text-zinc-200">{reservaConfirmada.hora} hrs</dd>
             </div>
           </dl>
           <div className="flex flex-wrap justify-center gap-3 pt-2">
@@ -239,14 +213,14 @@ export function ReservationForm() {
               onClick={() => {
                 setReservaConfirmada(null)
                 setStatus("idle")
-                setForm((s) => ({ ...s, hora: undefined, notas: "" }))
+                setForm((s) => ({ ...s, hora: undefined, descripcion: "" }))
               }}
               variant="outline"
-              className="border-border"
+              className="border-zinc-800 bg-transparent text-zinc-300 hover:text-white"
             >
-              Hacer otra reserva
+              Agendar otra evaluación
             </Button>
-            <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button asChild className="bg-red-600 text-white hover:bg-red-700">
               <a href="/">Volver al inicio</a>
             </Button>
           </div>
@@ -257,74 +231,81 @@ export function ReservationForm() {
 
   return (
     <form onSubmit={onSubmit} className="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
-      {/* Columna izquierda: servicio, calendario, hora */}
       <div className="space-y-6">
-        <Card className="border-border bg-card/60">
+        
+        <Card className="border-zinc-800 bg-zinc-900/60">
           <CardHeader>
-            <CardTitle className="font-serif text-xl">1. Servicio y duración</CardTitle>
-            <CardDescription>Elige qué quieres reservar.</CardDescription>
+            <CardTitle className="font-serif text-xl text-white">1. Detalles del Tatuaje</CardTitle>
+            <CardDescription className="text-zinc-400">Cuéntanos sobre tu idea para la evaluación.</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="categoria">Tipo de servicio</Label>
-              <Select value={form.categoriaId} onValueChange={onSelectCategory}>
-                <SelectTrigger id="categoria">
-                  <SelectValue placeholder="Selecciona un tipo de servicio" />
+            <div className="space-y-2">
+              <Label htmlFor="tipoTatuaje" className="text-zinc-300">Tipo de trabajo</Label>
+              <Select value={form.tipoTatuaje} onValueChange={(v) => update("tipoTatuaje", v)}>
+                <SelectTrigger id="tipoTatuaje" className="bg-zinc-950 border-zinc-800">
+                  <SelectValue placeholder="Selecciona" />
                 </SelectTrigger>
-                <SelectContent>
-                  {SERVICE_CATEGORIES.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.nombre}
-                    </SelectItem>
+                <SelectContent className="bg-zinc-950 border-zinc-800 text-zinc-200">
+                  {SERVICES.map((s) => (
+                    <SelectItem key={s.id} value={s.nombre}>{s.nombre}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
+            
             <div className="space-y-2">
-              <Label htmlFor="servicio">Servicio</Label>
-              <Select value={form.servicioId} onValueChange={onSelectService}>
-                <SelectTrigger id="servicio">
-                  <SelectValue placeholder="Selecciona un servicio" />
-                </SelectTrigger>
-                <SelectContent>
-                  {getServicesByCategory(form.categoriaId as any).map((s) => (
-                    <SelectItem key={s.id} value={s.id}>
-                      {s.nombre}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="duracion">Duración</Label>
-              <Select
-                value={String(form.duracion)}
-                onValueChange={(v) => update("duracion", Number(v))}
-              >
-                <SelectTrigger id="duracion">
+              <Label htmlFor="tamano" className="text-zinc-300">Tamaño aprox.</Label>
+              <Select value={form.tamano} onValueChange={(v) => update("tamano", v)}>
+                <SelectTrigger id="tamano" className="bg-zinc-950 border-zinc-800">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
-                  {OPCIONES_DURACION.map((o) => (
-                    <SelectItem key={o.value} value={String(o.value)}>
-                      {o.label}
-                    </SelectItem>
-                  ))}
+                <SelectContent className="bg-zinc-950 border-zinc-800 text-zinc-200">
+                  <SelectItem value="Pequeño (1-5cm)">Pequeño (1-5cm)</SelectItem>
+                  <SelectItem value="Mediano (6-15cm)">Mediano (6-15cm)</SelectItem>
+                  <SelectItem value="Grande (16cm+)">Grande (16cm+)</SelectItem>
+                  <SelectItem value="Manga completa">Manga completa</SelectItem>
                 </SelectContent>
               </Select>
             </div>
+
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="zonaCuerpo" className="text-zinc-300">Zona del cuerpo</Label>
+              <Input
+                id="zonaCuerpo"
+                value={form.zonaCuerpo}
+                onChange={(e) => update("zonaCuerpo", e.target.value)}
+                placeholder="Ej. Antebrazo, espalda, costillas..."
+                className="bg-zinc-950 border-zinc-800"
+                required
+              />
+            </div>
+            
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="descripcion" className="text-zinc-300">Descripción / Idea / Referencias</Label>
+              <Textarea
+                id="descripcion"
+                value={form.descripcion}
+                onChange={(e) => update("descripcion", e.target.value)}
+                placeholder="Describe tu idea, si tienes referencias, etc."
+                className="bg-zinc-950 border-zinc-800 text-white"
+                rows={3}
+              />
+            </div>
+            <p className="sm:col-span-2 text-sm text-zinc-500 italic mt-2">
+              * Duración: El tiempo estimado del tatuaje se definirá tras esta evaluación.
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-card/60">
+        <Card className="border-zinc-800 bg-zinc-900/60">
           <CardHeader>
-            <CardTitle className="font-serif text-xl">2. Fecha y hora</CardTitle>
-            <CardDescription>
-              Atendemos lunes a sábado entre {BUSINESS.openHour}:00 y {BUSINESS.closeHour}:00.
+            <CardTitle className="font-serif text-xl text-white">2. Fecha y hora para la Evaluación</CardTitle>
+            <CardDescription className="text-zinc-400">
+              Disponibilidad de {BUSINESS.openHour}:00 a {BUSINESS.closeHour}:00.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6 md:grid-cols-[auto_1fr]">
-            <div className="rounded-lg border border-border bg-background/40 p-2">
+            <div className="rounded-lg border border-zinc-800 bg-zinc-950/40 p-2">
               <Calendar
                 mode="single"
                 locale={es}
@@ -333,50 +314,48 @@ export function ReservationForm() {
                 onSelect={(d) => update("fecha", d ?? undefined)}
                 disabled={(date) => {
                   if (date < today) return true
-                  return date.getDay() === 0 // domingo
+                  return date.getDay() === 0 
                 }}
-                className="bg-transparent"
+                className="bg-transparent text-white"
               />
             </div>
 
             <div className="min-w-0">
               <div className="flex items-center justify-between">
-                <Label className="inline-flex items-center gap-2">
+                <Label className="inline-flex items-center gap-2 text-zinc-300">
                   <Clock className="h-4 w-4" />
-                  Horarios disponibles
+                  Horarios
                 </Label>
                 {form.fecha && (
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-zinc-500">
                     {format(form.fecha, "EEEE d MMM", { locale: es })}
                   </span>
                 )}
               </div>
 
               {!form.fecha && (
-                <p className="mt-3 rounded-md border border-dashed border-border bg-background/30 p-4 text-sm text-muted-foreground">
-                  Selecciona primero una fecha en el calendario.
+                <p className="mt-3 rounded-md border border-dashed border-zinc-800 bg-zinc-950/30 p-4 text-sm text-zinc-500">
+                  Selecciona primero una fecha.
                 </p>
               )}
 
               {form.fecha && status === "loadingSlots" && (
                 <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
                   {Array.from({ length: 12 }).map((_, i) => (
-                    <Skeleton key={i} className="h-10 rounded-md" />
+                    <Skeleton key={i} className="h-10 rounded-md bg-zinc-800" />
                   ))}
                 </div>
               )}
 
               {form.fecha && status !== "loadingSlots" && slots.length === 0 && (
-                <p className="mt-3 rounded-md border border-dashed border-border bg-background/30 p-4 text-sm text-muted-foreground">
-                  No hay horarios disponibles para esta fecha y duración. Prueba con otra
-                  combinación.
+                <p className="mt-3 rounded-md border border-dashed border-zinc-800 bg-zinc-950/30 p-4 text-sm text-zinc-500">
+                  No hay horarios disponibles para evaluación este día.
                 </p>
               )}
 
               {form.fecha && status !== "loadingSlots" && slots.length > 0 && (
                 <div
                   role="radiogroup"
-                  aria-label="Horarios disponibles"
                   className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4"
                 >
                   {slots.map((s) => {
@@ -391,8 +370,8 @@ export function ReservationForm() {
                         className={cn(
                           "rounded-md border px-2 py-2 text-sm transition-colors",
                           active
-                            ? "border-primary bg-primary text-primary-foreground"
-                            : "border-border bg-background/40 hover:border-primary/50 hover:bg-card",
+                            ? "border-red-600 bg-red-600 text-white"
+                            : "border-zinc-800 bg-zinc-950/40 text-zinc-300 hover:border-red-600/50 hover:bg-zinc-900",
                         )}
                       >
                         {s}
@@ -406,16 +385,15 @@ export function ReservationForm() {
         </Card>
       </div>
 
-      {/* Columna derecha: datos personales + resumen */}
       <div className="space-y-6">
-        <Card className="border-border bg-card/60">
+        <Card className="border-zinc-800 bg-zinc-900/60">
           <CardHeader>
-            <CardTitle className="font-serif text-xl">3. Tus datos</CardTitle>
-            <CardDescription>Para confirmar tu reserva.</CardDescription>
+            <CardTitle className="font-serif text-xl border-zinc-800 text-white">3. Tus datos</CardTitle>
+            <CardDescription className="text-zinc-400">Para contactarte y agendar.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="nombre">Nombre completo</Label>
+              <Label htmlFor="nombre" className="text-zinc-300">Nombre completo</Label>
               <Input
                 id="nombre"
                 value={form.nombre}
@@ -424,11 +402,12 @@ export function ReservationForm() {
                 autoComplete="name"
                 required
                 maxLength={120}
+                className="bg-zinc-950 border-zinc-800 text-white"
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-zinc-300">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -438,10 +417,11 @@ export function ReservationForm() {
                   autoComplete="email"
                   required
                   maxLength={160}
+                  className="bg-zinc-950 border-zinc-800 text-white"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="telefono">Teléfono</Label>
+                <Label htmlFor="telefono" className="text-zinc-300">Teléfono</Label>
                 <Input
                   id="telefono"
                   type="tel"
@@ -452,61 +432,48 @@ export function ReservationForm() {
                   autoComplete="tel"
                   required
                   maxLength={20}
+                  className="bg-zinc-950 border-zinc-800 text-white"
                 />
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="notas">Notas (opcional)</Label>
-              <Textarea
-                id="notas"
-                value={form.notas}
-                onChange={(e) => update("notas", e.target.value)}
-                placeholder="Comentarios o preferencias"
-                maxLength={500}
-                rows={3}
-              />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-primary/30 bg-card/60">
+        <Card className="border-red-600/30 bg-zinc-900/60">
           <CardHeader>
-            <CardTitle className="font-serif text-xl">Resumen</CardTitle>
+            <CardTitle className="font-serif text-xl text-white">Resumen</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm">            <Row label="Tipo de servicio" value={SERVICE_CATEGORIES.find(c => c.id === form.categoriaId)?.nombre ?? ""} />            <Row label="Servicio" value={servicioActual.nombre} />
-            <Row label="Duración" value={`${form.duracion} minutos`} />
+          <CardContent className="space-y-3 text-sm">
+            <Row label="Trabajo" value={form.tipoTatuaje} />
+            <Row label="Tamaño" value={form.tamano} />
+            <Row label="Zona" value={form.zonaCuerpo || "—"} />
             <Row
-              label="Fecha"
-              value={
-                form.fecha
-                  ? format(form.fecha, "EEEE d 'de' MMMM", { locale: es })
-                  : "—"
-              }
+              label="Fecha Evaluación"
+              value={form.fecha ? format(form.fecha, "EEEE d 'de' MMMM", { locale: es }) : "—"}
               capitalize
             />
-            <Row label="Hora" value={form.hora ?? "—"} />
+            <Row label="Hora Evaluación" value={form.hora ?? "—"} />
 
             <Button
               type="submit"
               size="lg"
-              className="mt-4 w-full bg-primary text-primary-foreground hover:bg-primary/90"
+              className="mt-4 w-full bg-red-600 text-white hover:bg-red-700 font-medium"
               disabled={status === "submitting" || isPending}
             >
               {status === "submitting" ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Enviando...
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin text-white" />
+                  Agendando...
                 </>
               ) : (
                 <>
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  Confirmar reserva
+                  Agendar Evaluación
                 </>
               )}
             </Button>
-            <p className="text-xs text-muted-foreground">
-              Al confirmar aceptas nuestras políticas de atención. Si necesitas cancelar,
-              avísanos al menos 2 horas antes.
+            <p className="text-xs text-zinc-500 text-center mt-2">
+              Esta solicitud es para una reunión de evaluación, sin monto a pagar aún.
             </p>
           </CardContent>
         </Card>
@@ -515,19 +482,11 @@ export function ReservationForm() {
   )
 }
 
-function Row({
-  label,
-  value,
-  capitalize,
-}: {
-  label: string
-  value: string
-  capitalize?: boolean
-}) {
+function Row({ label, value, capitalize }: { label: string; value: string; capitalize?: boolean }) {
   return (
-    <div className="flex items-center justify-between border-b border-border/60 py-2 last:border-b-0">
-      <span className="text-muted-foreground">{label}</span>
-      <span className={cn(capitalize && "capitalize")}>{value}</span>
+    <div className="flex items-center justify-between border-b border-zinc-800/60 py-2 last:border-b-0">
+      <span className="text-zinc-500">{label}</span>
+      <span className={cn(capitalize && "capitalize", "text-zinc-200 truncate max-w-[200px]")}>{value}</span>
     </div>
   )
 }

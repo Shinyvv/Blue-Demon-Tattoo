@@ -9,8 +9,7 @@ import { addMinutes, isBefore } from "date-fns"
 export const runtime = "nodejs"
 
 /**
- * POST /api/reservas
- * Crea una reserva validando datos, horario laboral y solapamientos.
+ * POST /api/evaluaciones
  */
 export async function POST(request: Request) {
   let json: unknown
@@ -37,15 +36,13 @@ export async function POST(request: Request) {
   const inicio = combinarFechaHora(fechaBase, data.hora)
   const fin = addMinutes(inicio, data.duracion)
 
-  // Día laboral
   if (!esDiaLaboral(fechaBase)) {
     return NextResponse.json(
-      { ok: false, error: "La barbería no atiende ese día (lunes a sábado)." },
+      { ok: false, error: "El estudio no atiende ese día (lunes a sábado)." },
       { status: 409 },
     )
   }
 
-  // Horario válido (no antes de apertura ni después del cierre)
   const apertura = new Date(fechaBase)
   apertura.setHours(BUSINESS.openHour, 0, 0, 0)
   const cierre = new Date(fechaBase)
@@ -55,22 +52,20 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         ok: false,
-        error: `La reserva debe estar entre ${BUSINESS.openHour}:00 y ${BUSINESS.closeHour}:00.`,
+        error: `La evaluación debe estar entre ${BUSINESS.openHour}:00 y ${BUSINESS.closeHour}:00.`,
       },
       { status: 409 },
     )
   }
 
-  // No permitir fechas/horas pasadas
   if (isBefore(inicio, new Date())) {
     return NextResponse.json(
-      { ok: false, error: "No es posible reservar en el pasado." },
+      { ok: false, error: "No es posible agendar en el pasado." },
       { status: 409 },
     )
   }
 
   try {
-    // Verificar solapamiento: cualquier reserva que cruce con [inicio, fin)
     const conflicto = await prisma.reserva.findFirst({
       where: {
         estado: { in: ["PENDIENTE", "CONFIRMADA"] },
@@ -83,8 +78,7 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           ok: false,
-          error:
-            "Ese horario ya no está disponible. Por favor escoge otro horario o duración.",
+          error: "Ese horario ya no está disponible. Por favor escoge otro horario o duración.",
         },
         { status: 409 },
       )
@@ -101,10 +95,18 @@ export async function POST(request: Request) {
         duracion: data.duracion,
         inicioAt: inicio,
         finAt: fin,
-          notas: data.descripcion ?? data.notas ?? null,
-          tipoTatuaje: data.tipoTatuaje ?? null,
-          tamano: data.tamano ?? null,
-          zonaCuerpo: data.zonaCuerpo ?? null,
+        notas: data.descripcion ?? data.notas ?? null,
+        tipoTatuaje: data.tipoTatuaje ?? null,
+        tamano: data.tamano ?? null,
+        zonaCuerpo: data.zonaCuerpo ?? null,
+      },
+    })
+
+    return NextResponse.json(
+      {
+        ok: true,
+        reserva: {
+          id: creada.id,
           servicio: creada.servicio,
           fecha: data.fecha,
           hora: creada.hora,
@@ -115,21 +117,19 @@ export async function POST(request: Request) {
     )
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
-      console.error("[reservas:POST] Prisma error", err.code, err.message)
+      console.error("[evaluaciones:POST] Prisma error", err.code, err.message)
     } else {
-      console.error("[reservas:POST] Error inesperado", err)
+      console.error("[evaluaciones:POST] Error inesperado", err)
     }
     return NextResponse.json(
-      { ok: false, error: "Error interno al crear la reserva." },
+      { ok: false, error: "Error interno al crear la evaluación." },
       { status: 500 },
     )
   }
 }
 
 /**
- * GET /api/reservas?fecha=YYYY-MM-DD
- * Devuelve las reservas activas de una fecha (sin datos sensibles).
- * Útil para el panel admin si se construye más adelante.
+ * GET /api/evaluaciones?fecha=YYYY-MM-DD
  */
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -163,9 +163,9 @@ export async function GET(request: Request) {
     })
     return NextResponse.json({ ok: true, reservas })
   } catch (err) {
-    console.error("[reservas:GET] Error", err)
+    console.error("[evaluaciones:GET] Error", err)
     return NextResponse.json(
-      { ok: false, error: "Error interno al consultar reservas." },
+      { ok: false, error: "Error interno al consultar disponibilidades." },
       { status: 500 },
     )
   }

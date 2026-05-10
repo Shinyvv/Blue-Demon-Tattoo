@@ -2,17 +2,19 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Hero } from "@/components/sections/hero"
 import { ServicesSection } from "@/components/sections/services"
-import { BrandsSection } from "@/components/sections/brands"
+import { EstilosSection } from "@/components/sections/estilos"
+import { TrabajosSection } from "@/components/sections/trabajos"
 import { ContactSection } from "@/components/sections/contact"
 
 export default function HomePage() {
   return (
     <>
       <SiteHeader />
-      <main>
+      <main className="bg-zinc-950 text-zinc-50 selection:bg-red-500/30">
         <Hero />
         <ServicesSection />
-        <BrandsSection />
+        <EstilosSection />
+        <TrabajosSection />
         <ContactSection />
       </main>
       <SiteFooter />
