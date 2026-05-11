@@ -10,7 +10,7 @@ export default function HomePage() {
   return (
     <>
       <SiteHeader />
-      <main className="bg-zinc-950 text-zinc-50 selection:bg-red-500/30">
+      <main className="bg-white text-secondary selection:bg-accent/30">
         <Hero />
         <ServicesSection />
         <EstilosSection />

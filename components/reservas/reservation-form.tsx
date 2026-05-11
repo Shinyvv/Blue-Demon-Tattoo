@@ -183,29 +183,29 @@ export function ReservationForm() {
 
   if (status === "success" && reservaConfirmada) {
     return (
-      <Card className="border-red-600/40 bg-zinc-900/80">
+      <Card className="border-secondary/30 bg-white">
         <CardHeader className="items-center text-center">
-          <span className="grid h-14 w-14 place-items-center rounded-full bg-red-600/15 text-red-500">
+          <span className="grid h-14 w-14 place-items-center rounded-full bg-secondary/10 text-secondary">
             <CheckCircle2 className="h-7 w-7" />
           </span>
-          <CardTitle className="font-serif text-3xl text-white">¡Evaluación Agendada!</CardTitle>
-          <CardDescription className="text-zinc-400">
+          <CardTitle className="font-serif text-3xl text-secondary">¡Evaluación Agendada!</CardTitle>
+          <CardDescription className="text-secondary/70">
             Te esperamos en {BUSINESS.name}, {reservaConfirmada.nombre}.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 text-center">
           <dl className="mx-auto grid max-w-sm grid-cols-1 gap-3 text-sm">
-            <div className="flex items-center justify-between rounded-md border border-zinc-800 bg-zinc-950/40 px-4 py-2">
-              <dt className="text-zinc-500">Trabajo</dt>
-              <dd className="text-zinc-200">{reservaConfirmada.servicio}</dd>
+            <div className="flex items-center justify-between rounded-md border border-secondary/20 bg-white px-4 py-2">
+              <dt className="text-secondary/60">Trabajo</dt>
+              <dd className="text-secondary">{reservaConfirmada.servicio}</dd>
             </div>
-            <div className="flex items-center justify-between rounded-md border border-zinc-800 bg-zinc-950/40 px-4 py-2">
-              <dt className="text-zinc-500">Fecha</dt>
-              <dd className="capitalize text-zinc-200">{reservaConfirmada.fecha}</dd>
+            <div className="flex items-center justify-between rounded-md border border-secondary/20 bg-white px-4 py-2">
+              <dt className="text-secondary/60">Fecha</dt>
+              <dd className="capitalize text-secondary">{reservaConfirmada.fecha}</dd>
             </div>
-            <div className="flex items-center justify-between rounded-md border border-zinc-800 bg-zinc-950/40 px-4 py-2">
-              <dt className="text-zinc-500">Hora</dt>
-              <dd className="text-zinc-200">{reservaConfirmada.hora} hrs</dd>
+            <div className="flex items-center justify-between rounded-md border border-secondary/20 bg-white px-4 py-2">
+              <dt className="text-secondary/60">Hora</dt>
+              <dd className="text-secondary">{reservaConfirmada.hora} hrs</dd>
             </div>
           </dl>
           <div className="flex flex-wrap justify-center gap-3 pt-2">
@@ -216,11 +216,11 @@ export function ReservationForm() {
                 setForm((s) => ({ ...s, hora: undefined, descripcion: "" }))
               }}
               variant="outline"
-              className="border-zinc-800 bg-transparent text-zinc-300 hover:text-white"
+              className="border-secondary/30 bg-transparent text-secondary/70 hover:text-secondary"
             >
               Agendar otra evaluación
             </Button>
-            <Button asChild className="bg-red-600 text-white hover:bg-red-700">
+            <Button asChild className="bg-secondary text-white hover:bg-secondary/90">
               <a href="/">Volver al inicio</a>
             </Button>
           </div>
@@ -233,19 +233,19 @@ export function ReservationForm() {
     <form onSubmit={onSubmit} className="grid gap-6 lg:grid-cols-[1.1fr_1fr]">
       <div className="space-y-6">
         
-        <Card className="border-zinc-800 bg-zinc-900/60">
+        <Card className="border-secondary/20 bg-white">
           <CardHeader>
-            <CardTitle className="font-serif text-xl text-white">1. Detalles del Tatuaje</CardTitle>
-            <CardDescription className="text-zinc-400">Cuéntanos sobre tu idea para la evaluación.</CardDescription>
+            <CardTitle className="font-serif text-xl text-secondary">1. Detalles del Tatuaje</CardTitle>
+            <CardDescription className="text-secondary/70">Cuéntanos sobre tu idea para la evaluación.</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="tipoTatuaje" className="text-zinc-300">Tipo de trabajo</Label>
+              <Label htmlFor="tipoTatuaje" className="text-secondary">Tipo de trabajo</Label>
               <Select value={form.tipoTatuaje} onValueChange={(v) => update("tipoTatuaje", v)}>
-                <SelectTrigger id="tipoTatuaje" className="bg-zinc-950 border-zinc-800">
+                <SelectTrigger id="tipoTatuaje" className="bg-white border-secondary/20">
                   <SelectValue placeholder="Selecciona" />
                 </SelectTrigger>
-                <SelectContent className="bg-zinc-950 border-zinc-800 text-zinc-200">
+                <SelectContent className="bg-white border-secondary/20 text-secondary">
                   {SERVICES.map((s) => (
                     <SelectItem key={s.id} value={s.nombre}>{s.nombre}</SelectItem>
                   ))}
@@ -254,12 +254,12 @@ export function ReservationForm() {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="tamano" className="text-zinc-300">Tamaño aprox.</Label>
+              <Label htmlFor="tamano" className="text-secondary">Tamaño aprox.</Label>
               <Select value={form.tamano} onValueChange={(v) => update("tamano", v)}>
-                <SelectTrigger id="tamano" className="bg-zinc-950 border-zinc-800">
+                <SelectTrigger id="tamano" className="bg-white border-secondary/20">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="bg-zinc-950 border-zinc-800 text-zinc-200">
+                <SelectContent className="bg-white border-secondary/20 text-secondary">
                   <SelectItem value="Pequeño (1-5cm)">Pequeño (1-5cm)</SelectItem>
                   <SelectItem value="Mediano (6-15cm)">Mediano (6-15cm)</SelectItem>
                   <SelectItem value="Grande (16cm+)">Grande (16cm+)</SelectItem>
@@ -269,43 +269,43 @@ export function ReservationForm() {
             </div>
 
             <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="zonaCuerpo" className="text-zinc-300">Zona del cuerpo</Label>
+              <Label htmlFor="zonaCuerpo" className="text-secondary">Zona del cuerpo</Label>
               <Input
                 id="zonaCuerpo"
                 value={form.zonaCuerpo}
                 onChange={(e) => update("zonaCuerpo", e.target.value)}
                 placeholder="Ej. Antebrazo, espalda, costillas..."
-                className="bg-zinc-950 border-zinc-800"
+                className="bg-white border-secondary/20 text-secondary"
                 required
               />
             </div>
             
             <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="descripcion" className="text-zinc-300">Descripción / Idea / Referencias</Label>
+              <Label htmlFor="descripcion" className="text-secondary">Descripción / Idea / Referencias</Label>
               <Textarea
                 id="descripcion"
                 value={form.descripcion}
                 onChange={(e) => update("descripcion", e.target.value)}
                 placeholder="Describe tu idea, si tienes referencias, etc."
-                className="bg-zinc-950 border-zinc-800 text-white"
+                className="bg-white border-secondary/20 text-secondary"
                 rows={3}
               />
             </div>
-            <p className="sm:col-span-2 text-sm text-zinc-500 italic mt-2">
+            <p className="sm:col-span-2 text-sm text-secondary/60 italic mt-2">
               * Duración: El tiempo estimado del tatuaje se definirá tras esta evaluación.
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-zinc-800 bg-zinc-900/60">
+        <Card className="border-secondary/20 bg-white">
           <CardHeader>
-            <CardTitle className="font-serif text-xl text-white">2. Fecha y hora para la Evaluación</CardTitle>
-            <CardDescription className="text-zinc-400">
+            <CardTitle className="font-serif text-xl text-secondary">2. Fecha y hora para la Evaluación</CardTitle>
+            <CardDescription className="text-secondary/70">
               Disponibilidad de {BUSINESS.openHour}:00 a {BUSINESS.closeHour}:00.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-6 md:grid-cols-[auto_1fr]">
-            <div className="rounded-lg border border-zinc-800 bg-zinc-950/40 p-2">
+            <div className="rounded-lg border border-secondary/20 bg-white p-2">
               <Calendar
                 mode="single"
                 locale={es}
@@ -316,25 +316,25 @@ export function ReservationForm() {
                   if (date < today) return true
                   return date.getDay() === 0 
                 }}
-                className="bg-transparent text-white"
+                className="bg-transparent text-secondary"
               />
             </div>
 
             <div className="min-w-0">
               <div className="flex items-center justify-between">
-                <Label className="inline-flex items-center gap-2 text-zinc-300">
+                <Label className="inline-flex items-center gap-2 text-secondary">
                   <Clock className="h-4 w-4" />
                   Horarios
                 </Label>
                 {form.fecha && (
-                  <span className="text-xs text-zinc-500">
+                  <span className="text-xs text-secondary/60">
                     {format(form.fecha, "EEEE d MMM", { locale: es })}
                   </span>
                 )}
               </div>
 
               {!form.fecha && (
-                <p className="mt-3 rounded-md border border-dashed border-zinc-800 bg-zinc-950/30 p-4 text-sm text-zinc-500">
+                <p className="mt-3 rounded-md border border-dashed border-secondary/20 bg-white p-4 text-sm text-secondary/60">
                   Selecciona primero una fecha.
                 </p>
               )}
@@ -342,13 +342,13 @@ export function ReservationForm() {
               {form.fecha && status === "loadingSlots" && (
                 <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
                   {Array.from({ length: 12 }).map((_, i) => (
-                    <Skeleton key={i} className="h-10 rounded-md bg-zinc-800" />
+                    <Skeleton key={i} className="h-10 rounded-md bg-secondary/10" />
                   ))}
                 </div>
               )}
 
               {form.fecha && status !== "loadingSlots" && slots.length === 0 && (
-                <p className="mt-3 rounded-md border border-dashed border-zinc-800 bg-zinc-950/30 p-4 text-sm text-zinc-500">
+                <p className="mt-3 rounded-md border border-dashed border-secondary/20 bg-white p-4 text-sm text-secondary/60">
                   No hay horarios disponibles para evaluación este día.
                 </p>
               )}
@@ -370,8 +370,8 @@ export function ReservationForm() {
                         className={cn(
                           "rounded-md border px-2 py-2 text-sm transition-colors",
                           active
-                            ? "border-red-600 bg-red-600 text-white"
-                            : "border-zinc-800 bg-zinc-950/40 text-zinc-300 hover:border-red-600/50 hover:bg-zinc-900",
+                            ? "border-secondary bg-secondary text-white"
+                            : "border-secondary/20 bg-white text-secondary/70 hover:border-secondary/50 hover:bg-secondary/5",
                         )}
                       >
                         {s}
@@ -386,14 +386,14 @@ export function ReservationForm() {
       </div>
 
       <div className="space-y-6">
-        <Card className="border-zinc-800 bg-zinc-900/60">
+        <Card className="border-secondary/30 bg-white">
           <CardHeader>
-            <CardTitle className="font-serif text-xl border-zinc-800 text-white">3. Tus datos</CardTitle>
-            <CardDescription className="text-zinc-400">Para contactarte y agendar.</CardDescription>
+            <CardTitle className="font-serif text-xl border-secondary/20 text-secondary">3. Tus datos</CardTitle>
+            <CardDescription className="text-secondary/70">Para contactarte y agendar.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="nombre" className="text-zinc-300">Nombre completo</Label>
+              <Label htmlFor="nombre" className="text-secondary">Nombre completo</Label>
               <Input
                 id="nombre"
                 value={form.nombre}
@@ -402,12 +402,12 @@ export function ReservationForm() {
                 autoComplete="name"
                 required
                 maxLength={120}
-                className="bg-zinc-950 border-zinc-800 text-white"
+                className="bg-white border-secondary/20 text-secondary"
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-zinc-300">Email</Label>
+                <Label htmlFor="email" className="text-secondary">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -417,11 +417,11 @@ export function ReservationForm() {
                   autoComplete="email"
                   required
                   maxLength={160}
-                  className="bg-zinc-950 border-zinc-800 text-white"
+                  className="bg-white border-secondary/20 text-secondary"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="telefono" className="text-zinc-300">Teléfono</Label>
+                <Label htmlFor="telefono" className="text-secondary">Teléfono</Label>
                 <Input
                   id="telefono"
                   type="tel"
@@ -432,16 +432,16 @@ export function ReservationForm() {
                   autoComplete="tel"
                   required
                   maxLength={20}
-                  className="bg-zinc-950 border-zinc-800 text-white"
+                  className="bg-white border-secondary/20 text-secondary"
                 />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-red-600/30 bg-zinc-900/60">
+        <Card className="border-secondary/30 bg-white">
           <CardHeader>
-            <CardTitle className="font-serif text-xl text-white">Resumen</CardTitle>
+            <CardTitle className="font-serif text-xl text-secondary">Resumen</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <Row label="Trabajo" value={form.tipoTatuaje} />
@@ -457,7 +457,7 @@ export function ReservationForm() {
             <Button
               type="submit"
               size="lg"
-              className="mt-4 w-full bg-red-600 text-white hover:bg-red-700 font-medium"
+              className="mt-4 w-full bg-secondary text-white hover:bg-secondary/90 font-medium"
               disabled={status === "submitting" || isPending}
             >
               {status === "submitting" ? (
@@ -472,7 +472,7 @@ export function ReservationForm() {
                 </>
               )}
             </Button>
-            <p className="text-xs text-zinc-500 text-center mt-2">
+            <p className="text-xs text-secondary/60 text-center mt-2">
               Esta solicitud es para una reunión de evaluación, sin monto a pagar aún.
             </p>
           </CardContent>
@@ -484,9 +484,9 @@ export function ReservationForm() {
 
 function Row({ label, value, capitalize }: { label: string; value: string; capitalize?: boolean }) {
   return (
-    <div className="flex items-center justify-between border-b border-zinc-800/60 py-2 last:border-b-0">
-      <span className="text-zinc-500">{label}</span>
-      <span className={cn(capitalize && "capitalize", "text-zinc-200 truncate max-w-[200px]")}>{value}</span>
+    <div className="flex items-center justify-between border-b border-secondary/20 py-2 last:border-b-0">
+      <span className="text-secondary/60">{label}</span>
+      <span className={cn(capitalize && "capitalize", "text-secondary truncate max-w-50")}>{value}</span>
     </div>
   )
 }

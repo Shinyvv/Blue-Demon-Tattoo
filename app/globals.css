@@ -4,60 +4,59 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
-  New Hair Salón — Tema claro elegante
-  Paleta (5 colores):
-   1. Off-white cremoso (background)
-   2. Charcoal cálido (foreground)
-   3. Rosa nude / dusty rose (primary / accent) ← marca
-   4. Beige muy claro (cards / muted)
-   5. Borde sutil neutro
+  Blue Demon Tattoo — Tema corporativo
+  Paleta (4 colores):
+   1. Blanco limpio (background)
+   2. Negro profundo (foreground)
+   3. Azul intenso (primary)
+   4. Dorado elegante (accent)
 */
 
 :root {
-  --background: oklch(0.985 0.004 70);          /* off-white cremoso */
-  --foreground: oklch(0.24 0.01 60);            /* charcoal cálido */
+  --background: oklch(0.99 0 0);                /* blanco limpio */
+  --foreground: oklch(0.45 0.14 258);           /* azul principal de texto */
 
-  --card: oklch(0.975 0.006 60);                /* beige muy claro */
-  --card-foreground: oklch(0.24 0.01 60);
+  --card: oklch(0.985 0 0);
+  --card-foreground: oklch(0.45 0.14 258);
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.01 60);
+  --popover: oklch(0.99 0 0);
+  --popover-foreground: oklch(0.45 0.14 258);
 
-  --primary: oklch(0.62 0.07 22);               /* dusty rose elegante */
-  --primary-foreground: oklch(0.985 0.004 70);
+  --primary: oklch(0.99 0 0);                   /* blanco principal */
+  --primary-foreground: oklch(0.45 0.14 258);
 
-  --secondary: oklch(0.95 0.006 60);
-  --secondary-foreground: oklch(0.24 0.01 60);
+  --secondary: oklch(0.45 0.14 258);            /* azul secundario */
+  --secondary-foreground: oklch(0.99 0 0);
 
-  --muted: oklch(0.955 0.005 60);
-  --muted-foreground: oklch(0.5 0.012 50);
+  --muted: oklch(0.95 0.005 260);
+  --muted-foreground: oklch(0.45 0.02 260);
 
-  --accent: oklch(0.93 0.018 22);               /* rosa pálido suave */
-  --accent-foreground: oklch(0.32 0.04 22);
+  --accent: oklch(0.82 0.12 85);                /* dorado terciario */
+  --accent-foreground: oklch(0.2 0.02 85);
 
-  --destructive: oklch(0.55 0.22 27);
-  --destructive-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.57 0.22 27);
+  --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.9 0.005 60);
-  --input: oklch(0.92 0.005 60);
-  --ring: oklch(0.62 0.07 22);
+  --border: oklch(0.9 0.005 260);
+  --input: oklch(0.92 0.005 260);
+  --ring: oklch(0.45 0.14 258);
 
-  --chart-1: oklch(0.62 0.07 22);
-  --chart-2: oklch(0.78 0.05 30);
-  --chart-3: oklch(0.55 0.04 60);
-  --chart-4: oklch(0.85 0.03 22);
-  --chart-5: oklch(0.7 0.02 60);
+  --chart-1: oklch(0.99 0 0);
+  --chart-2: oklch(0.45 0.14 258);
+  --chart-3: oklch(0.82 0.12 85);
+  --chart-4: oklch(0.3 0.02 260);
+  --chart-5: oklch(0.88 0.08 85);
 
   --radius: 0.75rem;
 
-  --sidebar: oklch(0.97 0.005 60);
-  --sidebar-foreground: oklch(0.24 0.01 60);
-  --sidebar-primary: oklch(0.62 0.07 22);
-  --sidebar-primary-foreground: oklch(0.985 0.004 70);
-  --sidebar-accent: oklch(0.93 0.018 22);
-  --sidebar-accent-foreground: oklch(0.32 0.04 22);
-  --sidebar-border: oklch(0.9 0.005 60);
-  --sidebar-ring: oklch(0.62 0.07 22);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.45 0.14 258);
+  --sidebar-primary: oklch(0.99 0 0);
+  --sidebar-primary-foreground: oklch(0.45 0.14 258);
+  --sidebar-accent: oklch(0.82 0.12 85);
+  --sidebar-accent-foreground: oklch(0.2 0.02 85);
+  --sidebar-border: oklch(0.9 0.005 260);
+  --sidebar-ring: oklch(0.45 0.14 258);
 }
 
 @theme inline {
@@ -119,7 +118,7 @@
     font-weight: 500;
   }
   ::selection {
-    background: oklch(0.62 0.07 22 / 0.25);
+    background: oklch(0.45 0.14 258 / 0.25);
     color: var(--foreground);
   }
 }
@@ -134,7 +133,7 @@
   .bg-soft-grain {
     background-image: radial-gradient(
       circle at 1px 1px,
-      oklch(0.24 0.01 60 / 0.03) 1px,
+      oklch(0.17 0.01 260 / 0.03) 1px,
       transparent 0
     );
     background-size: 6px 6px;
@@ -144,7 +143,7 @@
     background: linear-gradient(
       to right,
       transparent,
-      oklch(0.62 0.07 22 / 0.4),
+      oklch(0.82 0.12 85 / 0.4),
       transparent
     );
     height: 1px;

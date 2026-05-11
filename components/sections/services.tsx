@@ -6,25 +6,25 @@ export function ServicesSection() {
     {
       id: "personalizado",
       nombre: "Tatuaje Personalizado",
-      descripcion: "Dise�o �nico creado exclusivamente para ti basado en tus ideas.",
+      descripcion: "Diseño único creado exclusivamente para ti basado en tus ideas.",
       icon: PenTool
     },
     {
       id: "tradicional",
       nombre: "Tatuaje Tradicional",
-      descripcion: "Colores s�lidos y l�neas gruesas. Un cl�sico que nunca muere.",
+      descripcion: "Colores sólidos y líneas gruesas. Un clásico que nunca muere.",
       icon: PenTool
     },
     {
       id: "fine-line",
       nombre: "Fine Line",
-      descripcion: "Detalles minimalistas y l�neas muy finas para un resultado elegante.",
+      descripcion: "Detalles minimalistas y líneas muy finas para un resultado elegante.",
       icon: PenTool
     },
     {
       id: "blackwork",
       nombre: "Blackwork",
-      descripcion: "Geometr�a, puntillismo y alto contraste solo con tinta negra.",
+      descripcion: "Geometría, puntillismo y alto contraste solo con tinta negra.",
       icon: PenTool
     }
   ]
@@ -33,7 +33,7 @@ export function ServicesSection() {
     {
       id: "cover-up",
       nombre: "Cover-up (Cobertura)",
-      descripcion: "Ocultamos tatuajes antiguos o cicatrices con un dise�o nuevo (previa evaluaci�n detallada).",
+      descripcion: "Ocultamos tatuajes antiguos o cicatrices con un diseño nuevo (previa evaluación detallada).",
       icon: Search
     }
   ]
@@ -41,35 +41,35 @@ export function ServicesSection() {
   const evaluaciones = [
     {
       id: "asesoria",
-      nombre: "Asesor�a de dise�o",
+      nombre: "Asesoría de diseño",
       descripcion: "Nos reunimos para hablar de tu idea, ubicarla en el cuerpo y cotizar adecuadamente.",
       icon: Sparkles
     }
   ]
 
   return (
-    <section id="servicios" className="relative py-24 bg-zinc-950">
+    <section id="servicios" className="relative py-24 bg-white">
       <div className="mx-auto max-w-6xl px-4 md:px-6">
         <header className="mx-auto max-w-2xl text-center">
-          <p className="text-xs uppercase tracking-[0.25em] text-red-600">
+          <p className="text-xs uppercase tracking-[0.25em] text-accent">
             Nuestros Servicios
           </p>
-          <h2 className="mt-3 font-serif text-4xl text-balance md:text-5xl text-white">
-            Tu cuerpo es el <span className="italic text-red-600">lienzo</span>
+          <h2 className="mt-3 font-serif text-4xl text-balance md:text-5xl text-secondary">
+            Tu cuerpo es el <span className="italic text-accent">lienzo</span>
           </h2>
-          <p className="mt-4 text-zinc-400 text-pretty">
-            Nos enfocamos en entregar un trabajo art�stico y profesional. Todo trabajo requiere evaluaci�n previa para un resultado �ptimo.
+          <p className="mt-4 text-secondary/70 text-pretty">
+            Nos enfocamos en entregar un trabajo artístico y profesional. Todo trabajo requiere evaluación previa para un resultado óptimo.
           </p>
         </header>
 
         <div className="mt-16 space-y-16">
-          <CategoryBlock title="Tatuajes" description="Estilos y dise�os a tu medida." icon={PenTool} items={serviciosTattoo} />
-          <CategoryBlock title="Coberturas" description="Renueva tu piel con un dise�o mejor." icon={Search} items={coberturas} />
-          <CategoryBlock title="Evaluaciï¿½n" description="El primer paso hacia tu nuevo tattoo." icon={Sparkles} items={evaluaciones} />
+          <CategoryBlock title="Tatuajes" description="Estilos y diseños a tu medida." icon={PenTool} items={serviciosTattoo} />
+          <CategoryBlock title="Coberturas" description="Renueva tu piel con un diseño mejor." icon={Search} items={coberturas} />
+          <CategoryBlock title="Evaluación" description="El primer paso hacia tu nuevo tattoo." icon={Sparkles} items={evaluaciones} />
         </div>
 
-        <p className="mt-16 text-center text-sm text-zinc-500">
-          * Los precios no son fijos, todo valor exacto est� sujeto a evaluaci�n de dise�o, tama�o y zona del cuerpo.
+        <p className="mt-16 text-center text-sm text-secondary/60">
+          * Los precios no son fijos, todo valor exacto está sujeto a evaluación de diseño, tamaño y zona del cuerpo.
         </p>
       </div>
     </section>
@@ -79,14 +79,14 @@ export function ServicesSection() {
 function CategoryBlock({ title, description, icon: Icon, items }: { title: string, description: string, icon: any, items: any[] }) {
   return (
     <div>
-      <div className="mb-6 flex items-end justify-between gap-4 border-b border-zinc-800 pb-4">
+      <div className="mb-6 flex items-end justify-between gap-4 border-b border-secondary/20 pb-4">
         <div className="flex items-center gap-4">
-          <span className="grid h-12 w-12 place-items-center rounded-full border border-red-600/30 bg-red-600/10 text-red-600">
+          <span className="grid h-12 w-12 place-items-center rounded-full border border-primary/30 bg-primary/10 text-primary">
             <Icon className="h-5 w-5" />
           </span>
           <div>
-            <h3 className="font-serif text-2xl md:text-3xl text-white">{title}</h3>
-            <p className="text-sm text-zinc-400">{description}</p>
+            <h3 className="font-serif text-2xl md:text-3xl text-secondary">{title}</h3>
+            <p className="text-sm text-secondary/70">{description}</p>
           </div>
         </div>
       </div>
@@ -98,25 +98,25 @@ function CategoryBlock({ title, description, icon: Icon, items }: { title: strin
             <Link
               href={`/reservar?servicio=${s.id}`}
               key={s.id}
-              className="group flex flex-col rounded-2xl border border-zinc-800 bg-zinc-900/50 p-6 transition-all hover:-translate-y-1 hover:border-red-600/40 hover:shadow-sm"
+              className="group flex flex-col rounded-2xl border border-secondary/20 bg-white p-6 transition-all hover:-translate-y-1 hover:border-secondary/50 hover:shadow-sm"
             >
               <div className="flex items-center justify-between">
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-red-600/10 text-red-600">
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/10 text-primary">
                   <SIcon className="h-4 w-4" />
                 </span>
-                <span className="text-xs uppercase tracking-widest text-zinc-500">
+                <span className="text-xs uppercase tracking-widest text-secondary/60">
                   Previa Eval.
                 </span>
               </div>
-              <h4 className="mt-5 font-serif text-2xl text-white">{s.nombre}</h4>
-              <p className="mt-2 flex-1 text-sm text-zinc-400">
+              <h4 className="mt-5 font-serif text-2xl text-secondary">{s.nombre}</h4>
+              <p className="mt-2 flex-1 text-sm text-secondary/70">
                 {s.descripcion}
               </p>
-              <div className="mt-6 flex items-end justify-between border-t border-zinc-800 pt-4">
-                <span className="text-xs uppercase tracking-widest text-zinc-500">
+              <div className="mt-6 flex items-end justify-between border-t border-secondary/20 pt-4">
+                <span className="text-xs uppercase tracking-widest text-secondary/60">
                   Valor
                 </span>
-                <span className="font-serif text-xl text-red-500">
+                <span className="font-serif text-xl text-accent">
                   Desde / A cotizar
                 </span>
               </div>

@@ -14,16 +14,16 @@ export default function ReservarPage() {
   return (
     <>
       <SiteHeader />
-      <main className="pt-28 pb-24 bg-zinc-950 min-h-screen text-zinc-50">
+      <main className="pt-28 pb-24 bg-white min-h-screen text-secondary">
         <div className="mx-auto max-w-6xl px-4 md:px-6">
           <header className="mx-auto max-w-2xl text-center">
-            <p className="text-xs uppercase tracking-[0.25em] text-red-600">
+            <p className="text-xs uppercase tracking-[0.25em] text-accent">
               Solicitud de Evaluación
             </p>
-            <h1 className="mt-3 font-serif text-4xl text-balance md:text-5xl text-white">
-              Cuéntanos tu <span className="italic text-red-600">idea</span>
+            <h1 className="mt-3 font-serif text-4xl text-balance md:text-5xl text-secondary">
+              Cuéntanos tu <span className="italic text-accent">idea</span>
             </h1>
-            <p className="mt-4 text-zinc-400 text-pretty">
+            <p className="mt-4 text-secondary/70 text-pretty">
               Todo tatuaje requiere una evaluación previa para definir diseño, tiempo y valor final. 
             </p>
           </header>
@@ -43,8 +43,8 @@ export default function ReservarPage() {
 function FormSkeleton() {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <Skeleton className="h-[420px] rounded-xl bg-zinc-900" />
-      <Skeleton className="h-[420px] rounded-xl bg-zinc-900" />
+      <Skeleton className="h-[420px] rounded-xl bg-secondary/10" />
+      <Skeleton className="h-[420px] rounded-xl bg-secondary/10" />
     </div>
   )
 }
